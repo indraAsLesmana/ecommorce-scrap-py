@@ -26,6 +26,8 @@ if response.status_code == 200:
 
                     # Insert the product into the database
                     db_connection.insert_product(title, img_src)
+                    test = db_connection.get_all_products()
+
     else:
         print("Element with class 'home__brand' not found.")
 else:
