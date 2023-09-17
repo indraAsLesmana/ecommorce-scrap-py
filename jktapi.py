@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request, Response, g
 from dbconnection import DBConnection  # Import the DBConnection class from dbconnection.py
+from main import search_product
 
 app = Flask(__name__)
 app.debug = True
-
 
 USERNAME = 'indra'
 PASSWORD = 'indra'
@@ -32,6 +32,8 @@ def requires_auth(f):
             return authenticate()
         return f(*args, **kwargs)
 
+    # Rename the decorated function to preserve the endpoint name
+    decorated.__name__ = f.__name__
     return decorated
 
 
@@ -52,6 +54,22 @@ def get_products():
     db = get_db()  # Get the database connection from the context
     products = db.get_all_products()
     return jsonify(products)
+
+
+@app.route('/api/search', methods=['GET'])
+@requires_auth
+def search_product_api():
+    # Get the search key from the query parameters
+    search_key = request.args.get('key')
+
+    # Call the search_product function and store the results
+    products = search_product(search_key)
+
+    # Check if products were found
+    if products:
+        return jsonify(products)
+    else:
+        return jsonify({"message": "No products found for the given search key."}), 404
 
 
 if __name__ == '__main__':
