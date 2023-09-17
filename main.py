@@ -116,7 +116,10 @@ def main():
     #         print(f"Title: {product['title']}")
     #         print(f"Image URL: {product['image_url']}")
     #         print()
+    # to test
     search_product("samsung")
+    # or using curl
+    # curl -u indra:indra 'http://localhost:5000/api/search?key=samsung'
 
 
 if __name__ == '__main__':
