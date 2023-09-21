@@ -62,15 +62,31 @@ def search_product_api():
     # Get the search key from the query parameters
     search_key = request.args.get('key')
 
-    # Call the search_product function and store the results
-    products = search_product(search_key)
+    # Check if the result for this key exists in the database
+    db = get_db()
+    cached_result = db.get_cached_result(search_key.lower())
 
-    # Check if products were found
-    if products:
-        return jsonify(products)
+    if cached_result:
+        # If the result is cached in the database, return it
+        print("result from cached")
+        return jsonify(cached_result)
     else:
-        return jsonify({"message": "No products found for the given search key."}), 404
+        # Call the search_product function and store the results
+        products = search_product(search_key)
+        # Check if products were found
+        if products:
+            # Save the search key and its result to the database
+            db.save_search_result(search_key, products)
+            return jsonify(products)
+        else:
+            return jsonify({"message": "No products found for the given search key."}), 404
+
+
+@app.route('/')
+def index():
+    return 'Hello, World!'
 
 
 if __name__ == '__main__':
+    # app.run(host='0.0.0.0', port=8000, debug=True)
     app.run(debug=True)

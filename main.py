@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from dbconnection import DBConnection
+import re
 
 
 def scrape_website_and_insert_data():
@@ -101,10 +102,22 @@ def search_product(search_key):
         print(f"An error occurred: {str(e)}")
 
 
+def product_detail(product_id):
+    # Define the base URL
+    base_url = "https://www.jakartanotebook.com"
+    # Construct the URL with the search key
+
+    original_string = product_id
+    formatted_string = "-".join(original_string.split()).lower()
+    formatted_string = re.sub(r'(-)+', r'-', formatted_string)
+    endpath = formatted_string.replace("/", "-or-")
+    url = f"{base_url}/p/{endpath}"
+    print(url)
+
+
 def main():
     # Call the function to scrape the website and insert data
     # scrape_website_and_insert_data()
-
 
     # Optionally, retrieve and display data from the database here if needed
     # db_connection = DBConnection()
@@ -117,9 +130,11 @@ def main():
     #         print(f"Image URL: {product['image_url']}")
     #         print()
     # to test
-    search_product("samsung")
+    # search_product("samsung")
     # or using curl
     # curl -u indra:indra 'http://localhost:5000/api/search?key=samsung'
+    product_detail("FELFIAL Kabel Data Lightning Multifungsi Fast Charging 15V/2A 1M - FE-1M - Black")
+
 
 
 if __name__ == '__main__':
