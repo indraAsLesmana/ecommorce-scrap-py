@@ -78,7 +78,7 @@ class DBConnection:
 
             # Insert or replace the search key, result, and timestamp into the search_cache table
             self.cursor.execute('INSERT OR REPLACE INTO search_cache (search_key, result, timestamp) VALUES (?, ?, ?)',
-                                (search_key, json.dumps(result), current_time))
+                                (search_key.lower(), json.dumps(result), current_time))
             self.conn.commit()
         except sqlite3.Error as e:
             print("Error while saving search result:", e)  # Debugging statement
